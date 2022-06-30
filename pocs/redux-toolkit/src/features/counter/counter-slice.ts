@@ -23,6 +23,22 @@ const counterReducer = createSlice({
       state.value += action.payload;
     },
   },
+  // extraReducers(builder) {
+  //const pendingActions = isPending(fetchEditors, fetchPosts);
+  //const fullfilledActions = isFullfilled(fetchEditors,fetchPosts);
+  //const rejectedActions = isRejected(fetchEditors,fetchPosts);
+
+  //   builder
+  //     .addMatcher(pendingActions, (state) => {
+  //       state.fetching = true;
+  //     })
+  //     .addMatcher(fullfilledActions, (state) => {
+  //       state.fetching = false;
+  //     })
+  //     .addMatcher(rejectedActions, (state) => {
+  //       state.fetching = false;
+  //     });
+  // },
 });
 
 export const { increment, amountAdded } = counterReducer.actions;
