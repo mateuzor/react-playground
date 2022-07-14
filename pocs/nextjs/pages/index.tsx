@@ -1,7 +1,7 @@
 import type { GetServerSideProps, GetStaticProps, NextPage } from "next";
-import styles from "../styles/Home.module.css";
+// import styles from "../styles/Home.module.css";
 
-const Home: NextPage = ({ repositories, date }) => {
+export default function Home({ repositories, date }: any) {
   return (
     <>
       <h1>{date}</h1>
@@ -12,7 +12,7 @@ const Home: NextPage = ({ repositories, date }) => {
       </ul>
     </>
   );
-};
+}
 
 // export const getStaticProps: GetStaticProps = async () => {
 //   const response = await fetch("https://api.github.com/users/mateuzor/repos");
@@ -40,5 +40,3 @@ export const getServerSideProps: GetServerSideProps = async () => {
     },
   };
 };
-
-export default Home;

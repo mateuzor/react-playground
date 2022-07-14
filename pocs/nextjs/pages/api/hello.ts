@@ -12,3 +12,5 @@ export default async function handler(
   await res.revalidate("/");
   res.status(200).json({ name: "John Doe" });
 }
+// we can call 3rd part apis from here without the need of implementing
+//in a backend
