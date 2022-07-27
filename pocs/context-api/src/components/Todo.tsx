@@ -1,5 +1,3 @@
-// components/Todo.tsx
-import * as React from "react";
 import { ITodo } from "../@types/todo";
 
 type Props = {

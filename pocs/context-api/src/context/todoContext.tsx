@@ -1,15 +1,14 @@
-// context/todoContext.tsx
-import * as React from "react";
+import { createContext, useState } from "react";
 import { TodoContextType, ITodo } from "../@types/todo";
 
 interface Props {
   children?: React.ReactNode;
 }
 
-export const TodoContext = React.createContext<TodoContextType | null>(null);
+export const TodoContext = createContext<TodoContextType | null>(null);
 
 const TodoProvider: React.FC<Props> = ({ children }) => {
-  const [todos, setTodos] = React.useState<ITodo[]>([
+  const [todos, setTodos] = useState<ITodo[]>([
     {
       id: 1,
       title: "post 1",
@@ -24,10 +23,11 @@ const TodoProvider: React.FC<Props> = ({ children }) => {
     },
   ]);
   const saveTodo = (todo: ITodo) => {
+    const { title, description } = todo;
     const newTodo: ITodo = {
       id: Math.random(), // not really unique - but fine for this example
-      title: todo.title,
-      description: todo.description,
+      title: title,
+      description: description,
       status: false,
     };
     setTodos([...todos, newTodo]);
