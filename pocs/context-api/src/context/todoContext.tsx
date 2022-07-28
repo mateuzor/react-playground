@@ -5,7 +5,13 @@ interface Props {
   children?: React.ReactNode;
 }
 
-export const TodoContext = createContext<TodoContextType | null>(null);
+const initialValue = {
+  todos: [],
+  saveTodo: () => {},
+  updateTodo: () => {},
+};
+
+export const TodoContext = createContext<TodoContextType>(initialValue);
 
 const TodoProvider: React.FC<Props> = ({ children }) => {
   const [todos, setTodos] = useState<ITodo[]>([

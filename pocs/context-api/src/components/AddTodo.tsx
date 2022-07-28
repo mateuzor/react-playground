@@ -1,9 +1,9 @@
 import { TodoContext } from "../context/todoContext";
-import { TodoContextType, ITodo } from "../@types/todo";
+import { ITodo } from "../@types/todo";
 import { useContext, useState } from "react";
 
 export const AddTodo: React.FC = () => {
-  const { saveTodo } = useContext(TodoContext) as TodoContextType;
+  const { saveTodo } = useContext(TodoContext);
   const [formData, setFormData] = useState<ITodo | {}>();
   const handleForm = (e: React.FormEvent<HTMLInputElement>): void => {
     setFormData({
