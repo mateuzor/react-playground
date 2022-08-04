@@ -4,10 +4,11 @@ import PaginationExample from "./components/PaginationExample";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      refetchOnWindowFocus: false,
+      refetchOnWindowFocus: true,
     },
   },
 });
+
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
