@@ -4,20 +4,16 @@ import axios from "axios";
 
 const DOGS_API_KEY = "28347967-ef74-4077-90e0-29aebed2bf97";
 
-type StatusType = {
-  data: DogType[];
-  hasMore: boolean;
-  status: number;
-};
+const pageSize = 9;
 
 type DataType = {
   data: DogType[];
   hasMore: boolean;
 };
 
-async function fetchDogs(page: number): Promise<StatusType> {
-  const { data, headers, status } = await axios.get<DogType[]>(
-    `https://api.thedogapi.com/v1/breeds?limit=9&page=${page}`,
+async function fetchDogs(page: number): Promise<DataType> {
+  const { data, headers } = await axios.get<DogType[]>(
+    `https://api.thedogapi.com/v1/breeds?limit=${pageSize}&page=${page}`,
     {
       headers: {
         "Access-Control-Allow-Origin": "http://localhost:3000",
@@ -27,22 +23,22 @@ async function fetchDogs(page: number): Promise<StatusType> {
   );
   let hasMore = true;
   const total = headers["pagination-count"];
-  if (9 * page > Number(total)) {
+  if (pageSize * page > Number(total)) {
     hasMore = false;
   }
 
-  return { status, data, hasMore };
+  return { data, hasMore };
 }
 
 function useDogs(page = 0) {
-  const { status, data, error, isFetching, isPreviousData } = useQuery<
-    StatusType,
-    Error,
-    DataType
-  >(["dogs", page], () => fetchDogs(page), {
-    keepPreviousData: true,
-    staleTime: 5000,
-  });
+  const { status, data, error, isFetching, isPreviousData } = useQuery(
+    ["dogs", page],
+    () => fetchDogs(page),
+    {
+      keepPreviousData: true,
+      staleTime: 5000,
+    }
+  );
 
   return { status, data, error, isFetching, isPreviousData };
 }
