@@ -1,15 +1,18 @@
 import "./App.css";
+//redux
 import { increment } from "./features/counter/counter-slice";
 import { useAppDispatch, userAppSelector } from "./app/hooks";
+
+//zustand
 import useCountStore from "./stores/count";
 
 function App() {
   //Redux
-  const count = userAppSelector((state) => state.counter.value);
   const dispatch = useAppDispatch();
+  const count = userAppSelector((state) => state.counter.value);
+
   //Zustand
-  const incrementZustand = useCountStore((state) => state.incrementZustand);
-  const value = useCountStore((state) => state.value);
+  const { value, incrementZustand } = useCountStore((state) => state);
 
   return (
     <div className="App">
