@@ -1,6 +1,7 @@
 import "./App.css";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import LazyComponent from "./components/LazyComponent";
 
 function App() {
   const [allPokemons, setAllPokemons] = useState([]);
@@ -25,8 +26,8 @@ function App() {
         return (
           <div key={name}>
             <h2>{name}</h2>
-            <img
-              src={`https://raw.githubusercontent.com/pokeapi/sprites/master/sprites/pokemon/${id}.png`}
+            <LazyComponent
+              data-src={`https://raw.githubusercontent.com/pokeapi/sprites/master/sprites/pokemon/${id}.png`}
               alt={name}
             />
           </div>
