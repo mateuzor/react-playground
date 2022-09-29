@@ -7,16 +7,23 @@ export default function FollowersList() {
   const [followers, setFollowers] = useState([]);
 
   useEffect(() => {
-    const followers = async () =>
-      await axios.get("https://randomuser.me/api/?results=5");
-    setFollowers(followers.data);
+    const fetchFollowers = async () => {
+      const response = await axios.get("https://randomuser.me/api/?results=5");
+      setFollowers(response?.data?.results);
+    };
+
+    fetchFollowers();
   }, []);
 
   return (
     <div className="followerslist-container">
       <div>
         {followers?.map((follower, index) => (
-          <div className="follower-item" data-testid={`follower-item-${index}`}>
+          <div
+            key={index}
+            className="follower-item"
+            data-testid={`follower-item-${index}`}
+          >
             <img src={follower.picture.large} />
             <div className="followers-details">
               <div className="follower-item-name">
