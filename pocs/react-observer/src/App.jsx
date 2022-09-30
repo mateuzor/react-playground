@@ -13,7 +13,7 @@ function App() {
       if (data.results) {
         const pokemons = data.results.map((pokemon, index) => ({
           name: pokemon.name,
-          id: index + 100,
+          id: index + 101,
         }));
         console.log(pokemons);
         setAllPokemons(pokemons);
