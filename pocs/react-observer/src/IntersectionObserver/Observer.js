@@ -11,10 +11,11 @@ const onObserve = (entries, observer) => {
       //takes action for each element being intersected
       console.log("component on screen", target);
       target.src = target.dataset.src;
-      observer.unobserve(target); // here I unobserve the item once alredy in the screen
+      observer.unobserve(target); // here I unobserve the item once already in the screen
     }
   });
 };
 
-//here we have the instantiation of our intersection observer where we have pass two values
+//here we have the instantiation of our intersection observer where
+//we have pass the callback and the actions
 export default new IntersectionObserver(onObserve, defaultOptions);

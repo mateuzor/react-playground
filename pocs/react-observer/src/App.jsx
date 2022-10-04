@@ -15,7 +15,6 @@ function App() {
           name: pokemon.name,
           id: index + 101,
         }));
-        console.log(pokemons);
         setAllPokemons(pokemons);
       }
     }
