@@ -1,11 +1,11 @@
 const defaultOptions = {
-  root: null,
-  rootMargin: "0px",
-  threshold: 0,
+  root: null, // element is being intersected
+  rootMargin: "0px", // when it will starting considering the intersection
+  threshold: 0, // condition to trigger the callback
 };
 
 const onObserve = (entries, observer) => {
-  //the entries are being observed
+  //the entries is the array of images
   entries.forEach(({ isIntersecting, target }) => {
     if (isIntersecting) {
       //takes action for each element being intersected
