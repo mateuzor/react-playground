@@ -1,20 +1,21 @@
 const defaultOptions = {
-  root: null, // element is being intersected
-  rootMargin: "0px", // when it will starting considering the intersection
-  threshold: 0, // condition to trigger the callback
+  root: null,
+  rootMargin: "0px",
+  threshold: 0,
 };
 
 const onObserve = (entries, observer) => {
-  //the entries is the array of images
+  //the entries are being observed
   entries.forEach(({ isIntersecting, target }) => {
     if (isIntersecting) {
       //takes action for each element being intersected
       console.log("component on screen", target);
       target.src = target.dataset.src;
-      observer.unobserve(target); // here I unobserve the item once alredy in the screen
+      observer.unobserve(target); // here I unobserve the item once already in the screen
     }
   });
 };
 
-//here we have the instantiation of our intersection observer where we have pass two values
+//here we have the instantiation of our intersection observer where
+//we have pass the callback and the actions
 export default new IntersectionObserver(onObserve, defaultOptions);

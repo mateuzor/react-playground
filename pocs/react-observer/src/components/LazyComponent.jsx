@@ -6,7 +6,7 @@ const LazyComponent = ({ type, ...props }) => {
 
   useEffect(() => {
     if (lazyRef.current) {
-      //here we the logic to observe each image
+      //here is the logic to observe each image
       Observer.observe(lazyRef.current);
     }
   }, [lazyRef]);
