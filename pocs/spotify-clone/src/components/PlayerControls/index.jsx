@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import axios from "axios";
 import {
   BsFillPlayCircleFill,
   BsFillPauseCircleFill,
@@ -8,13 +9,26 @@ import {
 import { CgPlayTrackNext, CgPlayTrackPrev } from "react-icons/cg";
 import { FiRepeat } from "react-icons/fi";
 export default function PlayerControls() {
-  const [playerState, setPlayerState] = useState("pause");
+  const [playerState, setPlayerState] = useState("play");
 
   const changeState = async () => {
     playerState === "play" ? setPlayerState("pause") : setPlayerState("play");
   };
 
   const changeTrack = async (type) => {};
+
+  const getAudio = async () => {
+    try {
+      const result = await axios.get("http://localhost:3001/play-audio");
+      console.log(result);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  React.useEffect(() => {
+    getAudio();
+  }, []);
 
   return (
     <Container>
@@ -25,11 +39,13 @@ export default function PlayerControls() {
         <CgPlayTrackPrev onClick={() => changeTrack("previous")} />
       </div>
       <div className="state">
-        {playerState === "pause" ? (
-          <BsFillPauseCircleFill onClick={changeState} />
-        ) : (
-          <BsFillPlayCircleFill onClick={changeState} />
-        )}
+        <div>
+          <audio
+            src="http://localhost:3001/playlist"
+            controls
+            controlsList="novolume nodownload noplaybackrate"
+          />
+        </div>
       </div>
       <div className="next">
         <CgPlayTrackNext onClick={() => changeTrack("next")} />
