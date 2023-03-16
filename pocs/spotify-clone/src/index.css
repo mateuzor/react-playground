@@ -11,3 +11,51 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+audio {
+  width: 400px;
+  height: 40px;
+  border: none !important;
+}
+
+audio::-webkit-media-controls-panel {
+  -webkit-justify-content: center;
+  height: 50px;
+}
+
+/* Removes the time stamp */
+audio::-webkit-media-controls-current-time-display {
+  display: none !important;
+}
+audio::-webkit-media-controls-time-remaining-display {
+  display: none;
+}
+audio::-webkit-slider-thumb {
+  display: none !important;
+}
+
+audio::-webkit-media-controls-toggle-closed-captions-button {
+  display: none !important;
+}
+
+audio::-webkit-media-controls-mute-button {
+  display: none !important;
+}
+
+audio::-webkit-media-controls-volume-slider {
+  display: none !important;
+}
+
+audio::-webkit-media-controls-panel {
+  background-color: #181818;
+}
+
+audio::-webkit-media-controls-play-button {
+  display: none !important;
+}
+
+input[type="range"] {
+  outline: none;
+  height: 5px;
+  cursor: pointer;
+}
