@@ -1,10 +1,11 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import {
   BsFillPlayCircleFill,
   BsFillPauseCircleFill,
   BsShuffle,
+  BsTypeH2,
 } from "react-icons/bs";
 import { CgPlayTrackNext, CgPlayTrackPrev } from "react-icons/cg";
 import { FiRepeat } from "react-icons/fi";
@@ -15,6 +16,8 @@ export default function PlayerControls() {
   const [musicCurrentTime, setMusicCurrentTime] = useState(null);
   const [musicDuration, setMusicDuration] = useState(null);
   const [duratioInSeconds, setDuratioInSeconds] = useState(null);
+  const [playlist, setPlaylist] = useState(null);
+  const [position, setPosition] = useState(0);
 
   const [state, setSlide] = useState(0);
 
@@ -46,7 +49,11 @@ export default function PlayerControls() {
       setMusicCurrentTime(null);
       setMusicDuration(null);
     }
-    progressBarRef.current.value = result;
+    if (result) {
+      progressBarRef.current.value = result;
+    } else {
+      progressBarRef.current.value = 0;
+    }
   };
 
   let mouseDownOnSlider = false;
@@ -61,18 +68,37 @@ export default function PlayerControls() {
     }
   };
 
-  const changeTrack = async (type) => {};
-
-  const getAudio = async () => {
+  const getPlaylist = async () => {
     try {
-      const result = await axios.get("http://localhost:3001/playlist");
-      console.log(result);
+      const result = await axios.get("http://localhost:4001/playlist");
+      setPlaylist(result.data);
     } catch (error) {}
   };
 
-  React.useEffect(() => {
-    getAudio();
+  useEffect(() => {
+    getPlaylist();
   }, []);
+
+  const changeTrack = async (type) => {
+    const size = playlist.length - 1;
+    if (type === "next") {
+      if (position < size) {
+        setSlide(0);
+        setPlayerState("pause");
+        setPosition((prev) => prev + 1);
+        audiotagRef.current.pause();
+        audiotagRef.current.play();
+      }
+    } else {
+      if (position > 0) {
+        setSlide(0);
+        setPlayerState("pause");
+        setPosition((prev) => prev - 1);
+        audiotagRef.current.pause();
+        audiotagRef.current.play();
+      }
+    }
+  };
 
   const calculateTime = (secs, type) => {
     const minutes = Math.floor(secs / 60);
@@ -86,19 +112,27 @@ export default function PlayerControls() {
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
+    setSlide(0);
+    audiotagRef.current.play();
     if (audiotagRef) {
       audiotagRef.current.addEventListener("timeupdate", (e) => {
         const { duration, currentTime } = e.target;
+        if (currentTime === 0) {
+          changeTrack("next");
+        }
+        e.target.onloadedmetadata = function () {
+          calculateTime(e.target.duration, "duration");
+          calculateTime(e.target.duration, "duration");
+          calculateTime(e.target.currentTime, "currentTime");
+        };
         handleProgressBar(currentTime, duration);
-        calculateTime(duration, "duration");
-        calculateTime(currentTime, "currentTime");
       });
       return () => {
         audiotagRef.current.removeEventListener("timeupdate", () => {});
       };
     }
-  }, []);
+  }, [audiotagRef, position]);
 
   const handleAudioRepeat = () => {
     audiotagRef.current.loop = !audiotagRef.current.loop;
@@ -110,16 +144,15 @@ export default function PlayerControls() {
 
   return (
     <Container>
-      <CurrentSoundContainer>
-        <img
-          height={80}
-          src="https://www.soundhelix.com/sites/default/files/SoundHelix-logo-medium.png"
-        />
-        <div>
-          <p className="sound-name">Song-01</p>
-          <p className="band-name">SoundHelix</p>
-        </div>
-      </CurrentSoundContainer>
+      {playlist !== null && (
+        <CurrentSoundContainer>
+          <img height={80} src={playlist[position].image} />
+          <div>
+            <p className="sound-name">{playlist[position].song}</p>
+            <p className="band-name">{playlist[position].artist}</p>
+          </div>
+        </CurrentSoundContainer>
+      )}
       <div
         style={{
           display: "flex",
@@ -157,18 +190,27 @@ export default function PlayerControls() {
             <FiRepeat onClick={handleAudioRepeat} />
           </div>
         </div>
-
         <div style={{ display: "flex", alignItems: "center" }}>
-          <p style={{ color: "white", marginRight: "10px", fontSize: "11px" }}>
-            {musicCurrentTime}
-          </p>
+          {playlist !== null && (
+            <p
+              style={{ color: "white", marginRight: "10px", fontSize: "11px" }}
+            >
+              {musicCurrentTime}
+            </p>
+          )}
+
           <audio
             style={{ margin: "0 10px" }}
             hidden
             controls
             controlsList="nodownload noplaybackrate"
             ref={audiotagRef}
-            src="http://localhost:3001/playlist"
+            preload="metadata"
+            src={
+              playlist !== null
+                ? `http://localhost:4001/song/${playlist[position].id}`
+                : ""
+            }
           />
           <input
             ref={progressBarRef}
@@ -181,7 +223,7 @@ export default function PlayerControls() {
             defaultValue={state}
             onMouseUp={handleChange}
           />
-          {musicDuration && (
+          {playlist !== null && musicDuration !== null && (
             <p style={{ color: "white", marginLeft: "10px", fontSize: "11px" }}>
               {musicDuration}
             </p>
