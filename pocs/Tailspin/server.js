@@ -3,52 +3,54 @@ const http = require("http");
 const socketIo = require("socket.io");
 const chokidar = require("chokidar");
 const fs = require("fs");
+const path = require("path");
 
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
 
 const htmlFilePath = "index.html";
+const distPath = path.join(__dirname, "dist");
 
-// Configurar o servidor de arquivos estáticos
-app.use(express.static(__dirname + "/dist"));
+// Serve the static files from the dist directory
+app.use(express.static(distPath));
 
-// Rota GET para servir o arquivo index.html
-app.get("/", (req, res) => {
-  res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-  res.sendFile(__dirname + "/src/index.html");
+// Serve the tailwind.css file with the correct MIME type
+app.get("/tailwind.css", (req, res) => {
+  res.setHeader("Content-Type", "text/css");
+  res.sendFile(path.join(distPath, "tailwind.css"));
 });
 
-// Iniciar o servidor WebSocket
+// Configure the WebSocket server
 io.on("connection", (socket) => {
-  console.log("Cliente conectado.");
+  console.log("Client connected.");
 
-  // Monitorar mudanças no arquivo HTML
+  // Monitor changes to the HTML file
   const watcher = chokidar.watch(htmlFilePath);
   watcher.on("change", () => {
-    console.log("O arquivo HTML foi alterado.");
+    console.log("The HTML file has changed.");
 
-    // Ler o conteúdo atualizado do arquivo HTML
+    // Read the updated HTML file content
     fs.readFile(htmlFilePath, "utf8", (err, data) => {
       if (err) {
-        console.error("Erro ao ler o arquivo HTML:", err);
+        console.error("Error reading the HTML file:", err);
         return;
       }
 
-      // Enviar o conteúdo do arquivo atualizado para o cliente
-      socket.emit("html-update", data);
+      // Send a reload signal to the client
+      socket.emit("reload");
     });
   });
 
-  // Lidar com a desconexão do cliente
+  // Handle client disconnection
   socket.on("disconnect", () => {
-    console.log("Cliente desconectado.");
+    console.log("Client disconnected.");
     watcher.close();
   });
 });
 
-// Iniciar o servidor HTTP
-const port = 3000; // Porta do servidor
+// Start the HTTP server
+const port = 3000;
 server.listen(port, () => {
-  console.log(`Servidor iniciado em http://localhost:${port}`);
+  console.log(`Server started at http://localhost:${port}`);
 });
